@@ -1,0 +1,283 @@
+Test Automation - API
+Using “pet” endpoints from https://petstore.swagger.io/ write CRUD operations API
+tests with positive and negative scenarios.
+
+* Scenarios are run in the postman, which is more comfortable,
+ instead of Swagger after importing the PetStore API to the Postman.
+
+
+
+
+POST Request Scenarios:
+
+
+URL: https://petstore.swagger.io/v2/pet
+
+a. Positive Scenario
+
+Content Type: application/json
+Status Code : 200 OK
+{
+  "id": 111,
+  "category": {
+    "id": 1,
+    "name": "cats"
+  },
+  "name": "Tekir",
+  "photoUrls": [
+    "string"
+  ],
+  "tags": [
+    {
+      "id": 11,
+      "name": "catTag"
+    }
+  ],
+  "status": "available"
+}
+
+
+ b. Negative Scenario
+
+ Sending a POST request with ID numbers are missing:
+ Content Type: application/json
+ Status Code : 400 Bad Request
+
+ Request:
+ {
+  "id":,
+  "category": {
+    "id": ,
+    "name": "cats"
+  },
+  "name": "Tekir",
+  "photoUrls": [
+    "string"
+  ],
+  "tags": [
+    {
+      "id": ,
+      "name": "catTag"
+    }
+  ],
+  "status": "available"
+}
+
+Response:
+
+{
+    "code": 400,
+    "type": "unknown",
+    "message": "bad input"
+}
+
+
+
+GET Request Scenarios:
+
+
+URL: https://petstore.swagger.io/v2/pet/findByStatus?status=available&status=pending&status=sold
+
+i.e: Status are "available", "sold" and "pending" as endpoint url
+
+* Request made seperately ("pending" and " sold" responded with a few pets) and combination of all of them
+
+
+
+a. Positive Scenario
+
+Content Type: application/json
+Status Code : 200 OK
+
+Example:
+
+[
+    {
+        "id": 2609,
+        "name": "Json Whiskers",
+        "photoUrls": [
+            "http://cutecats.com/1.jpg",
+            "http://cutecats.com/2.jpg",
+            "http://cutecats.com/3.jpg"
+        ],
+        "tags": [],
+        "status": "pending"
+    },
+    {
+        "id": 9223372036854262858,
+        "category": {
+            "id": 0,
+            "name": "monkey"
+        },
+        "name": "Fruit",
+        "photoUrls": [
+            "string"
+        ],
+        "tags": [
+            {
+                "id": 0,
+                "name": "string"
+            }
+        ],
+        "status": "pending"
+    },
+    {
+        "id": 8,
+        "category": {
+            "id": 0,
+            "name": "Rock"
+        },
+        "name": "doggie",
+        "photoUrls": [
+            "string"
+        ],
+        "tags": [
+            {
+                "id": 0,
+                "name": "string"
+            }
+        ],
+        "status": "pending"
+    }
+]
+
+Note: With an invalid status value or without any status value, the response is still "200 OK" with an empty body.
+
+ b. Negative Scenario
+
+ Content Type: application/json
+
+
+ Sending a GET request with broken end points:
+ 
+ --First Negative Scenario:
+
+ url : https://petstore.swagger.io/v2/pet/
+ missing endpoint "findByStatus"
+
+ Response is:
+
+ 405 Method Not Allowed
+
+ {
+    "code": 405,
+    "type": "unknown"
+}
+
+ --Second Negative Scenario:
+
+url : https://petstore.swagger.io/v2/
+ missing endpoint "pet/findByStatus"
+
+ Response is:
+
+ 404 Nod Found
+ {
+    "code": 404,
+    "type": "unknown",
+    "message": "null for uri: http://petstore.swagger.io/v2/"
+}
+
+
+PUT Request Scenarios:
+
+
+URL: https://petstore.swagger.io/v2/pet
+
+a. Positive Scenario:
+
+Request is: 
+
+Content Type: application/json
+Body		: As below (changing the names)
+
+{
+  "id": 111,
+  "category": {
+    "id": 1,
+    "name": "birds"
+  },
+  "name": "minik",
+  "photoUrls": [
+    "string"
+  ],
+  "tags": [
+    {
+      "id": 11,
+      "name": "catTaged"
+    }
+  ],
+  "status": "available"
+}
+
+Response is:
+
+Status Code: 200 OK
+Body	   : Same as Request
+
+
+a. Negative Scenario:
+
+Request is: 
+
+Content Type: application/json
+Body		: included
+
+url: https://petstore.swagger.io/v2/ (missing "pet")
+
+
+Response is:
+
+Status Code: 404 Not Found
+Body: as below
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<apiResponse>
+    <message>null for uri: http://petstore.swagger.io/v2/</message>
+    <type>unknown</type>
+</apiResponse>
+
+
+
+DELETE Request Scenarios:
+
+
+URL: https://petstore.swagger.io/v2/pet/:petId
+
+a. Positive Scenario:
+
+Request is: 
+
+id : 111 (previously POSTed pet)
+
+
+Response is: 
+
+Status Code : 200 OK
+Body		: As below
+
+{
+    "code": 200,
+    "type": "unknown",
+    "message": "111"
+}
+
+Note: id 111 is checkeed with GET request after DELETEing it and NOT FOUND
+
+
+b. Negative Scenario:
+
+Request is:
+
+id : invalid
+
+Response is:
+
+Status Code : 404 Not Found
+Body 		: Empty
+
+
+
+
+
+
